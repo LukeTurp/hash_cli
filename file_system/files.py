@@ -36,6 +36,7 @@ def is_valid_file(abs_path):
 
 def list_all_files(base_path, out_file):
     """
+    Iterate over all files.  Hash and generate output
     """
     for dirname, subdirList, fileList in os.walk(base_path):
          for fileName in fileList:
