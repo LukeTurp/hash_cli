@@ -2,7 +2,7 @@
 
 import hashlib
 
-def compute_file_hash(abs_path):
+def compute_file_hash(abs_path, logger):
     """
     returning hash value of file contents
     """
@@ -12,7 +12,7 @@ def compute_file_hash(abs_path):
         return hashlib.sha256(data).hexdigest()
 
     except Exception as error:
-        print(
-            f'[!] File hash computation resulted with error: {error} | {abs_path}'
+        logger.error(
+            f'[-] File hash computation resulted with error: {error} | {abs_path}'
         )
-        return 'not/applicable'
+        return None 
