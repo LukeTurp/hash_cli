@@ -19,5 +19,8 @@ if __name__ == '__main__':
         api_scheme=args.scheme,
         api_host=args.host,
         api_port=args.port,
-        logger=log
+        logger=log,
+        version=args.api_version,
+        username=args.api_user,
+        password=args.api_password
     )
