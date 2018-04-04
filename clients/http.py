@@ -95,16 +95,12 @@ class HttpClient(HashApi):
 
     def send_hash_event(self, payload):
         try:
-            self.log.debug('[!] Sending hash event: {}'.format(payload['filename']))
+            self.log.debug('[!] Sending hash events: {}'.format(len(payload)))
             self.hash_api_headers['Authorization'] = f'Bearer {self.access_token}'
             r = requests.post(
                 url=self.hash_event_url,
                 headers=self.hash_api_headers,
-                json={
-                    'abspath': payload['abspath'],
-                    'filename': payload['filename'],
-                    'hashvalue': payload['hashvalue']
-                }
+                json=payload
             )
             if r.status_code == 401:
                 self.log.debug('[!] Refreshing token')
