@@ -11,7 +11,7 @@ def set_input_args(logger):
         description="Recursively hashes all files discovered within the path dir."
     )
     parser.add_argument(
-        '-p', '--path', help="absolute path of the file that will be hashed.",
+        '-p', '--path', help="directory from which file recursion will begin.",
         required=True
     )
     parser.add_argument(
@@ -26,9 +26,23 @@ def set_input_args(logger):
         '-d', '--port', help="network port of hash_api service.",
         required=True
     )
+    parser.add_argument(
+        '-r', '--api_version', help="version of hash_api to run.",
+        required=True
+    )
+    parser.add_argument(
+        '-u', '--api_user', help="username for access to hash_api.",
+        required=True
+    )
+    parser.add_argument(
+        '-w', '--api_password', help="password for access to hash_api.",
+        required=True
+    )
     args = parser.parse_args()
     logger.debug(f'[!] Received path: {args.path}')
     logger.debug(f'[!] Received scheme: {args.scheme}')
     logger.debug(f'[!] Received host: {args.host}')
     logger.debug(f'[!] Received port: {args.port}')
+    logger.debug(f'[!] Received version: {args.api_version}')
+    logger.debug(f'[!] Received username: {args.api_user}')
     return args
