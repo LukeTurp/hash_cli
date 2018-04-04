@@ -23,6 +23,8 @@ def list_all_files(
     """
     Iterate over all files.  Hash and generate output
     """
+    RECORDS_IN_BATCH = 1000
+
     logger.info(f'[+] Starting with base_path: {base_path}')
     http_client = HttpClient(
         api_scheme=api_scheme,
@@ -38,18 +40,31 @@ def list_all_files(
         logger.error(f'[-] Failed to receive a valid hash_api token.')
         return None
 
+    payload_list = []
+
     for dirname, subdirList, fileList in os.walk(base_path):
          for fileName in fileList:
              file_path = os.path.join(dirname, fileName)
              isFile = is_valid_file(abs_path=file_path)
 
-             if isFile:
-                 hash = compute_file_hash(abs_path=file_path, logger=logger)
-                 http_client.send_hash_event(
-                    payload={
-                        'abspath': file_path,
-                        'filename': fileName,
-                        'hashvalue': hash
-                    }
-                )
+             # This checks if the payload list is ready to receive a new item
+             if len(payload_list) < RECORDS_IN_BATCH:
+                 if isFile:
+                     hash = compute_file_hash(abs_path=file_path, logger=logger)
+                     payload_list.append({
+                         'abspath': file_path,
+                         'filename': fileName,
+                         'hashvalue': hash
+                     })
+
+             # This checks if the payload_list has reached the RECORDS_IN_BATCH limit
+             if len(payload_list) == RECORDS_IN_BATCH:
+                 http_client.send_hash_event(payload=payload_list)
+                 payload_list[:] = []
+
+     # At this point, we've reached the end of file records, and if there is a
+     # populated list < 1000 that needs to be sent, send it
+    if len(payload_list) > 0:
+        http_client.send_hash_event(payload=payload_list)
+
     http_client.destroy_auth_token()
