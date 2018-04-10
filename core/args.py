@@ -7,7 +7,8 @@ def set_input_args(logger):
     Setup Parser Arguments
     """
     parser = argparse.ArgumentParser(
-        usage="python3 run.py --path=/tmp/foo/",
+        usage="python3 run.py --path=/tmp/foo/ --scheme=http --host=127.0.0.1 --port=8000 \
+        --api_version=1 --api_user=exampleUser --api_password=examplePassword",
         description="Recursively hashes all files discovered within the path dir."
     )
     parser.add_argument(
