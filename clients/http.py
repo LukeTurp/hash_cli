@@ -5,6 +5,7 @@ import json
 import requests
 
 
+# HashApi will contain all neccessary configurations for hash_cli to interact with hash_api.
 class HashApi(object):
     def __init__(self, api_scheme, api_host, api_port, version, username, password):
         self.api_scheme = api_scheme
@@ -23,6 +24,7 @@ class HashApi(object):
         self.hash_api_headers = {'Content-Type': 'application/json'}
 
 
+# Instanciate HttpClient with all properties from HashApi inherited.
 class HttpClient(HashApi):
     def __init__(
         self, api_scheme, api_host, api_port, logger, version, username, password
@@ -32,6 +34,7 @@ class HttpClient(HashApi):
         self.access_token = None
         self.refresh_token = None
 
+    # Request authentication tokens on user login for API access.
     def get_jwt_token(self):
         try:
             self.log.debug('[!] Requesting an initial access token.')
@@ -66,6 +69,8 @@ class HttpClient(HashApi):
             self.log.error(f'[-] Generic Request Exception Occurred: {error}')
             return None
 
+    # If access_token expires, user may refresh both access tokens and refresh tokens,
+    # using the refresh token obtained on login.
     def refresh_access_token(self):
         try:
             self.log.debug('[!] Requesting new access and refresh tokens.')
@@ -93,9 +98,12 @@ class HttpClient(HashApi):
             self.log.error(f'[-] Generic Request Exception Occurred: {error}')
             return None
 
+    # after recursion and files with hash values have been batched this method
+    # sends the 1000 records to hash_api.  If the access_token expires during
+    #this process, refresh the token, then continue with batching.
     def send_hash_event(self, payload):
         try:
-            self.log.debug('[!] Sending hash events: {}'.format(len(payload)))
+            self.log.debug('[!] Sending {} hash events to db'.format(len(payload)))
             self.hash_api_headers['Authorization'] = f'Bearer {self.access_token}'
             r = requests.post(
                 url=self.hash_event_url,
@@ -129,6 +137,8 @@ class HttpClient(HashApi):
             self.log.error(f'[-] Generic Request Exception Occurred: {error}')
             return None
 
+    # Access and refresh tokens are destroyed upon user logout.  Currently,
+    # this is the default action after successfully running a hash event.
     def destroy_auth_token(self):
         try:
             self.log.debug('[!] Received token destroy request.')

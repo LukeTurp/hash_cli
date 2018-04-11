@@ -35,6 +35,8 @@ def list_all_files(
         username=username,
         password=password
     )
+
+    # Retrieve auth tokens for HashApi access.
     auth_success = http_client.get_jwt_token()
     if not auth_success:
         logger.error(f'[-] Failed to receive a valid hash_api token.')

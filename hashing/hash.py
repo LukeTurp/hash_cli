@@ -4,15 +4,15 @@ import hashlib
 
 def compute_file_hash(abs_path, logger):
     """
-    returning hash value of file contents
+    Returns hash value of specified file contents.
     """
     try:
         with open(abs_path, 'rb') as fp:
             data = fp.read()
         return hashlib.sha256(data).hexdigest()
 
-    except Exception as error:
+    except Exception as err:
         logger.error(
-            f'[-] File hash computation resulted with error: {error} | {abs_path}'
+            f'[-] File hash computation resulted with error: {err} | {abs_path}'
         )
-        return None 
+        return None
