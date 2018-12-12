@@ -24,7 +24,7 @@ Navigate to hash_cli repository in your command line:
 cd ~/path/to/repository
 ```
 
-###Arguments to include:
+### Arguments to include:
 - -p --path : absolute file path specifying the start point of files to hash.
 - -s --scheme : possible values are 'http' or 'https'.
 - -a --host : IP address hosting HashAPI.
